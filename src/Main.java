@@ -1,91 +1,78 @@
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Main {
+public class MatrixCalculator {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-
-        int n = getPositiveInteger(scanner, "Введите размер массива (положительное целое число): ");
-
-
-        int x = getInteger(scanner, "Введите пороговое значение: ");
-
-
-        int[] randomArray = generateRandomArray(n);
-
-
-        ArrayList<Integer> indicesAboveThreshold = getIndicesAboveThreshold(randomArray, x);
-
-
-        System.out.print("Сгенерированный массив: ");
-        for (int num : randomArray) {
-            System.out.print(num + " ");
-        }
-        System.out.println();
-
-        System.out.print("Индексы элементов, значения которых превышают порог " + x + ": ");
-        for (int index : indicesAboveThreshold) {
-            System.out.print(index + " ");
-        }
-        System.out.println();
-    }
-
-
-    private static int getPositiveInteger(Scanner scanner, String prompt) {
-        int value = 0;
-        while (true) {
-            System.out.print(prompt);
-            if (scanner.hasNextInt()) {
-                value = scanner.nextInt();
-                if (value > 0) {
-                    break;
+        int n = 0, m = 0;
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                System.out.print("Введите количество строк (n): ");
+                n = Integer.parseInt(scanner.nextLine());
+                System.out.print("Введите количество столбцов (m): ");
+                m = Integer.parseInt(scanner.nextLine());
+                if (n > 0 && m > 0) {
+                    validInput = true;
                 } else {
-                    System.out.println("Пожалуйста, введите положительное целое число.");
+                    System.out.println("Размеры матрицы должны быть положительными числами. Попробуйте снова.");
                 }
-            } else {
-                System.out.println("Некорректный ввод. Пожалуйста, введите целое число.");
-                scanner.next(); // очистка некорректного ввода
+            } catch (NumberFormatException e) {
+                System.out.println("Некорректный ввод. Введите целые числа.");
             }
         }
-        return value;
-    }
 
 
-    private static int getInteger(Scanner scanner, String prompt) {
-        int value = 0;
-        while (true) {
-            System.out.print(prompt);
-            if (scanner.hasNextInt()) {
-                value = scanner.nextInt();
-                break;
-            } else {
-                System.out.println("Некорректный ввод. Пожалуйста, введите целое число.");
-                scanner.next(); // очистка некорректного ввода
-            }
-        }
-        return value;
-    }
-
-
-    private static int[] generateRandomArray(int n) {
+        int[][] matrix = new int[n][m];
         Random random = new Random();
-        int[] array = new int[n];
         for (int i = 0; i < n; i++) {
-            array[i] = random.nextInt(101); // случайное число от 0 до 100 включительно
-        }
-        return array;
-    }
-
-
-    private static ArrayList<Integer> getIndicesAboveThreshold(int[] array, int x) {
-        ArrayList<Integer> indices = new ArrayList<>();
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] > x) {
-                indices.add(i);
+            for (int j = 0; j < m; j++) {
+                matrix[i][j] = random.nextInt(100); 
             }
         }
-        return indices;
+
+        System.out.println("Исходная матрица:");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                System.out.print(matrix[i][j] + "\t");
+            }
+            System.out.println();
+        }
+
+        int max = Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (matrix[i][j] > max) {
+                    max = matrix[i][j];
+                }
+                if (matrix[i][j] < min) {
+                    min = matrix[i][j];
+                }
+            }
+        }
+        System.out.println("Максимальное значение: " + max);
+        System.out.println("Минимальное значение: " + min);
+
+        System.out.println("Суммы элементов для каждой строки:");
+        for (int i = 0; i < n; i++) {
+            int rowSum = 0;
+            for (int j = 0; j < m; j++) {
+                rowSum += matrix[i][j];
+            }
+            System.out.println("Строка " + (i + 1) + ": " + rowSum);
+        }
+
+        System.out.println("Суммы элементов для каждого столбца:");
+        for (int j = 0; j < m; j++) {
+            int colSum = 0;
+            for (int i = 0; i < n; i++) {
+                colSum += matrix[i][j];
+            }
+            System.out.println("Столбец " + (j + 1) + ": " + colSum);
+        }
+
+        scanner.close();
     }
 }
